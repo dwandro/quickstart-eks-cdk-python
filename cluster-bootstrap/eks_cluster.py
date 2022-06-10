@@ -1924,7 +1924,7 @@ class EKSClusterStack(Stack):
                 self,
                 id="RDSPostgresDB",
                 engine=rds.DatabaseInstanceEngine.POSTGRES,
-                engine_version="11",
+                # engine_version="11",
                 instance_class=ec2.InstanceType.of(
                     ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.SMALL),
                 master_username="admin",
