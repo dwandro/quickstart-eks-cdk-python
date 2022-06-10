@@ -1924,7 +1924,7 @@ class EKSClusterStack(Stack):
                 self, 
                 "MySQL8",
                 engine=rds.DatabaseInstanceEngine.mysql(version=rds.MysqlEngineVersion.VER_8_0_21),
-                instance_type=ec2.InstanceType("m5.4xlarge"),
+                instance_type=ec2.InstanceType("m5.large"),
                 vpc=eks_vpc,
                 multi_az=True,
                 publicly_accessible=False,
