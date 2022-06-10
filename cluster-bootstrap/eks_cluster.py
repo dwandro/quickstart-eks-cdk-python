@@ -1929,8 +1929,7 @@ class EKSClusterStack(Stack):
                 cloudwatch_logs_exports=["error", "general", "slowquery"],
                 deletion_protection=False,
                 enable_performance_insights=True,
-                delete_automated_backups=True,
-                CfnDBSecurityGroup=cfn_dBSecurity_group
+                delete_automated_backups=True
                 # ,
                 # vpc_security_groups=rds_security_group
                 # backup_retention=core.Duration.days(1),
