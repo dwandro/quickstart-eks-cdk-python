@@ -11,6 +11,7 @@ phases:
     commands:
       - cd cluster-bootstrap
       - npm install
+      - npm install acorn
       - pip3 install --user -r requirements.txt
       - export CDK_DEPLOY_ACCOUNT=$(aws sts get-caller-identity | jq -r '.Account')
       - export CDK_DEPLOY_REGION=$AWS_REGION
