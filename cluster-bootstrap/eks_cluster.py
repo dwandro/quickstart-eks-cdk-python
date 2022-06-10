@@ -1943,7 +1943,7 @@ class EKSClusterStack(Stack):
                 self,
                 f'DBConnString',
                 parameter_name="DBConnString",
-                string_value=db.endpoint.hostname,
+                string_value=db.instanceEndpoint.hostname,
                 description="Database Connect String"
             )
         
