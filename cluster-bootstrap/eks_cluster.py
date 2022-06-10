@@ -1908,16 +1908,11 @@ class EKSClusterStack(Stack):
         if(self.node.try_get_context("deploy_rds") == "True"):
             
             # Create SecurityGroup for rds
-            rds_security_group = ec2.SecurityGroup(
-                self, "RDSSecurityGroup",
-                vpc=eks_vpc,
-                allow_all_outbound=True
-            )
-
-            # allow access form EKS
-            rds_security_group.add_ingress_rule(
-                eks_cluster.cluster_security_group,
-                ec2.Port.all_traffic()
+            cfn_dBSecurity_group = rds.CfnDBSecurityGroup(self, "RDSCfnDBSecurityGroup",
+                db_security_group_ingress=[rds.CfnDBSecurityGroup.IngressProperty(
+                    ec2_security_group_id= cluster_security_group.security_group_id
+                )],
+                group_description="groupDescription"
             )
 
             db = rds.DatabaseInstance(
@@ -1933,7 +1928,8 @@ class EKSClusterStack(Stack):
                 cloudwatch_logs_exports=["error", "general", "slowquery"],
                 deletion_protection=False,
                 enable_performance_insights=True,
-                delete_automated_backups=True
+                delete_automated_backups=True,
+                CfnDBSecurityGroup=cfn_dBSecurity_group
                 # ,
                 # vpc_security_groups=rds_security_group
                 # backup_retention=core.Duration.days(1),
