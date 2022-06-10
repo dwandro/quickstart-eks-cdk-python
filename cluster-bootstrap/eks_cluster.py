@@ -21,7 +21,8 @@ from aws_cdk import (
     aws_certificatemanager as cm,
     aws_efs as efs,
     aws_aps as aps,
-    aws_rds as rds
+    aws_rds as rds,
+    aws_ssm as ssm
 )
 import os
 import yaml
@@ -1937,7 +1938,16 @@ class EKSClusterStack(Stack):
                 #     self, "para-group-mysql",
                 #     parameter_group_name="default.mysql8.0"
                 # )
-            )        
+            )
+
+            parameter = ssm.StringParameter( 
+                self,
+                f'DBConnString',
+                parameter_name="DBConnString",
+                string_value=db.endpoint.hostname,
+                description="Database Connect String"
+            )
+        
 
             
 app = App()
