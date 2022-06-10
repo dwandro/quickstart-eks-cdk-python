@@ -1910,7 +1910,7 @@ class EKSClusterStack(Stack):
             # Create SecurityGroup for rds
             cfn_dBSecurity_group = rds.CfnDBSecurityGroup(self, "RDSCfnDBSecurityGroup",
                 db_security_group_ingress=[rds.CfnDBSecurityGroup.IngressProperty(
-                    ec2_security_group_id= cluster_security_group.security_group_id
+                    ec2_security_group_id= eks_cluster.cluster_security_group.security_group_id
                 )],
                 group_description="groupDescription"
             )
