@@ -20,7 +20,8 @@ from aws_cdk import (
     aws_logs as logs,
     aws_certificatemanager as cm,
     aws_efs as efs,
-    aws_aps as aps
+    aws_aps as aps,
+    aws_rds as rds
 )
 import os
 import yaml
@@ -1904,7 +1905,50 @@ class EKSClusterStack(Stack):
             else:
                 print("You need to set only one destination for Fargate Logs to True")
 
+        if(self.node.try_get_context("deploy_rds") == "True"):
+            
+            # Create SecurityGroup for rds
+            rds_security_group = ec2.SecurityGroup(
+                self, "RDSSecurityGroup",
+                vpc=eks_vpc,
+                allow_all_outbound=True
+            )
 
+            # allow access form EKS
+            rds_security_group.add_ingress_rule(
+                eks_cluster.cluster_security_group,
+                ec2.Port.all_traffic()
+            )
+
+            db = rds.DatabaseInstance(
+                self,
+                id="RDSPostgresDB",
+                engine=rds.DatabaseInstanceEngine.POSTGRES,
+                engine_version="11",
+                instance_class=ec2.InstanceType.of(
+                    ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.SMALL),
+                master_username="admin",
+                master_user_password="12345678",
+                vpc=eks_vpc,
+                vpc_placement=ec2.SubnetSelection(
+                    subnet_type=ec2.SubnetType.ISOLATED
+                ),
+                multi_az=True,
+                allocated_storage=100,
+                storage_type=rds.StorageType.GP2,
+                cloudwatch_logs_exports=["audit", "error", "general", "slowquery"],
+                deletion_protection=False,
+                delete_automated_backups=False,
+                vpc_security_groups=rds_security_group
+                # backup_retention=core.Duration.days(7),
+                # parameter_group=rds.ParameterGroup.from_parameter_group_name(
+                #     self,
+                #     id="para-group-postgres",
+                #     parameter_group_name="postgres11"
+                # )
+            )
+
+            
 app = App()
 if app.node.try_get_context("account").strip() != "":
     account = app.node.try_get_context("account")
