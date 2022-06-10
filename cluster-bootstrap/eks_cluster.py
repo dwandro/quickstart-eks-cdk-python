@@ -1931,7 +1931,7 @@ class EKSClusterStack(Stack):
                 master_user_password="12345678",
                 vpc=eks_vpc,
                 vpc_placement=ec2.SubnetSelection(
-                    subnet_type=ec2.SubnetType.ISOLATED
+                    subnet_type=ec2.SubnetType.PRIVATE_ISOLATED
                 ),
                 multi_az=True,
                 allocated_storage=100,
