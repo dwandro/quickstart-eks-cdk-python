@@ -1921,32 +1921,26 @@ class EKSClusterStack(Stack):
             )
 
             db = rds.DatabaseInstance(
-                self,
-                id="RDSPostgresDB",
-                engine=rds.DatabaseInstanceEngine.POSTGRES,
-                # engine_version="11",
-                instance_class=ec2.InstanceType.of(
-                    ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.SMALL),
-                master_username="admin",
-                master_user_password="12345678",
+                self, 
+                "MySQL8",
+                engine=rds.DatabaseInstanceEngine.mysql(version=rds.MysqlEngineVersion.VER_8_0_21),
+                instance_type=ec2.InstanceType("m5.4xlarge"),
                 vpc=eks_vpc,
-                vpc_placement=ec2.SubnetSelection(
-                    subnet_type=ec2.SubnetType.PRIVATE_ISOLATED
-                ),
                 multi_az=True,
+                publicly_accessible=False,
                 allocated_storage=100,
                 storage_type=rds.StorageType.GP2,
-                cloudwatch_logs_exports=["audit", "error", "general", "slowquery"],
+                cloudwatch_logs_exports=["error", "general", "slowquery"],
                 deletion_protection=False,
-                delete_automated_backups=False,
+                enable_performance_insights=True,
+                delete_automated_backups=True,
                 vpc_security_groups=rds_security_group
-                # backup_retention=core.Duration.days(7),
+                # backup_retention=core.Duration.days(1),
                 # parameter_group=rds.ParameterGroup.from_parameter_group_name(
-                #     self,
-                #     id="para-group-postgres",
-                #     parameter_group_name="postgres11"
+                #     self, "para-group-mysql",
+                #     parameter_group_name="default.mysql8.0"
                 # )
-            )
+            )        
 
             
 app = App()
