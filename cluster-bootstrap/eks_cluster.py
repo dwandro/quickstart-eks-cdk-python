@@ -1946,7 +1946,7 @@ class EKSClusterStack(Stack):
             cfn_dBSecurity_group = rds.CfnDBSecurityGroup(self, "MyCfnDBSecurityGroup",
                 db_security_group_ingress=[rds.CfnDBSecurityGroup.IngressProperty(
                     # cidrip="cidrip",
-                    # ec2_security_group_id="ec2SecurityGroupId",
+                    ec2_security_group_id=cfn_dBSecurity_group.ref
                     # ec2_security_group_name="ec2SecurityGroupName",
                     # ec2_security_group_owner_id="ec2SecurityGroupOwnerId"
                 )],
