@@ -1936,27 +1936,27 @@ class EKSClusterStack(Stack):
             # print("[Debug: ]", eks_vpc.private_subnets[2].subnet_id)
 
             # Create security group for the RDS instance
-            # db_sec_group = ec2.CfnSecurityGroup(
-            #     self,
-            #     "dbsecuritygroup",
-            #     group_description="DB Instance Security Group",
-            #     vpc_id=eks_vpc.vpc_id
-            # )
-
-            cfn_dBSecurity_group = rds.CfnDBSecurityGroup(self, "MyCfnDBSecurityGroup",
-                db_security_group_ingress=[rds.CfnDBSecurityGroup.IngressProperty(
-                    # cidrip="cidrip",
-                    ec2_security_group_id=cfn_dBSecurity_group.ref
-                    # ec2_security_group_name="ec2SecurityGroupName",
-                    # ec2_security_group_owner_id="ec2SecurityGroupOwnerId"
-                )],
-                group_description="groupDescription",
-
-                # the properties below are optional
-                ec2_vpc_id=eks_vpc.vpc_id
+            db_sec_group = ec2.CfnSecurityGroup(
+                self,
+                "dbsecuritygroup",
+                group_description="DB Instance Security Group",
+                vpc_id=eks_vpc.vpc_id
             )
 
+            # cfn_dBSecurity_group = rds.CfnDBSecurityGroup(self, "MyCfnDBSecurityGroup",
+            #     db_security_group_ingress=[rds.CfnDBSecurityGroup.IngressProperty(
+            #         # cidrip="cidrip",
+            #         ec2_security_group_id=cfn_dBSecurity_group.ref
+            #         # ec2_security_group_name="ec2SecurityGroupName",
+            #         # ec2_security_group_owner_id="ec2SecurityGroupOwnerId"
+            #     )],
+            #     group_description="groupDescription",
 
+            #     # the properties below are optional
+            #     ec2_vpc_id=eks_vpc.vpc_id
+            # )
+
+            # create a subnets group for db
             cfn_db_subnets_group = rds.CfnDBSubnetGroup(
                 self, "MyCfnDBSubnetGroup",
                 db_subnet_group_description="dbSubnetGroupDescription",
@@ -1977,11 +1977,11 @@ class EKSClusterStack(Stack):
                 master_user_password="Pa$$w0rd1$2020",
                 publicly_accessible=False,
                 db_subnet_group_name="jam_subnet_g",
-                #db_security_groups=[db_sec_group.attr_group_id]
-                db_security_groups=[cfn_dBSecurity_group.ref]
+                vpc_security_groups=[db_sec_group.attr_group_id]
+                # db_security_groups=[cfn_dBSecurity_group.ref]
             )
-            cfn_db.add_depends_on(cfn_dBSecurity_group)
-            # cfn_db.add_depends_on(db_sec_group)
+            # cfn_db.add_depends_on(cfn_dBSecurity_group)
+            cfn_db.add_depends_on(db_sec_group)
             cfn_db.add_depends_on(cfn_db_subnets_group)
 
             parameter = ssm.StringParameter( 
