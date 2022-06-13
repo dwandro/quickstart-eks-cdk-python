@@ -1943,35 +1943,35 @@ class EKSClusterStack(Stack):
             print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[0].subnet_id)
             print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[1].subnet_id)
             print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[2].subnet_id)
-            
-            cfn_db_subnets_group = rds.CfnDBSubnetGroup(
-                self, "MyCfnDBSubnetGroup",
-                db_subnet_group_description="dbSubnetGroupDescription",
-                subnet_ids=[eks_vpc.private_subnets[0].subnet_id,eks_vpc.private_subnets[1].subnet_id,eks_vpc.private_subnets[2].subnet_id],
 
-                # the properties below are optional
-                db_subnet_group_name="jam_subnet_g"
-                )
+            # cfn_db_subnets_group = rds.CfnDBSubnetGroup(
+            #     self, "MyCfnDBSubnetGroup",
+            #     db_subnet_group_description="dbSubnetGroupDescription",
+            #     subnet_ids=[eks_vpc.private_subnets[0].subnet_id,eks_vpc.private_subnets[1].subnet_id,eks_vpc.private_subnets[2].subnet_id],
 
-            cfn_db = rds.CfnDBInstance(
-                self, 
-                "MyCfnDBInstance",
-                allocated_storage="100",
-                db_instance_class="db.t3.medium",
-                engine= 'mysql',
-                db_name="JAMDB",
-                master_username="root",
-                master_user_password="Pa$$w0rd1$2020",
-                publicly_accessible=False,
-                db_subnet_group_name="jam_subnet_g"
-            )
+            #     # the properties below are optional
+            #     db_subnet_group_name="jam_subnet_g"
+            #     )
+
+            # cfn_db = rds.CfnDBInstance(
+            #     self, 
+            #     "MyCfnDBInstance",
+            #     allocated_storage="100",
+            #     db_instance_class="db.t3.medium",
+            #     engine= 'mysql',
+            #     db_name="JAMDB",
+            #     master_username="root",
+            #     master_user_password="Pa$$w0rd1$2020",
+            #     publicly_accessible=False,
+            #     db_subnet_group_name="jam_subnet_g"
+            # )
             
             parameter = ssm.StringParameter( 
                 self,
                 f'DBConnString',
                 parameter_name="DBConnString",
-                # string_value=db.db_instance_endpoint_address,
-                string_value=cfn_db.attr_endpoint_address,
+                string_value=db.db_instance_endpoint_address,
+                # string_value=cfn_db.attr_endpoint_address,
                 description="Database Connect String"
             )
         
