@@ -181,8 +181,8 @@ class EKSClusterStack(Stack):
                 release_version=self.node.try_get_context(
                     "eks_node_ami_version")
             )
-            eks_node_group.role.add_managed_policy(
-                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"))
+            # eks_node_group.role.add_managed_policy(
+            #     iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"))
 
         # AWS Load Balancer Controller
         if (self.node.try_get_context("deploy_aws_lb_controller") == "True"):
@@ -1907,15 +1907,6 @@ class EKSClusterStack(Stack):
                 print("You need to set only one destination for Fargate Logs to True")
 
         if(self.node.try_get_context("deploy_rds") == "True"):
-            
-            # Create SecurityGroup for rds
-            # cfn_dBSecurity_group = rds.CfnDBSecurityGroup(self, "RDSCfnDBSecurityGroup",
-            #     db_security_group_ingress=[rds.CfnDBSecurityGroup.IngressProperty(
-            #         ec2_security_group_id= eks_cluster.cluster_security_group.security_group_id
-            #     )],
-            #     group_description="groupDescription"
-            # )
-
             db = rds.DatabaseInstance(
                 self, 
                 "MySQL8",
@@ -1930,7 +1921,7 @@ class EKSClusterStack(Stack):
                 deletion_protection=False,
                 enable_performance_insights=True,
                 delete_automated_backups=True
-
+                
                 # ,
                 # vpc_security_groups=rds_security_group
                 # backup_retention=core.Duration.days(1),
@@ -1940,9 +1931,17 @@ class EKSClusterStack(Stack):
                 # )
             )
             
-            print("[Debug: ]", eks_vpc.private_subnets[0].subnet_id)
-            print("[Debug: ]", eks_vpc.private_subnets[1].subnet_id)
-            print("[Debug: ]", eks_vpc.private_subnets[2].subnet_id)
+            # print("[Debug: ]", eks_vpc.private_subnets[0].subnet_id)
+            # print("[Debug: ]", eks_vpc.private_subnets[1].subnet_id)
+            # print("[Debug: ]", eks_vpc.private_subnets[2].subnet_id)
+
+            # Create security group for the RDS instance
+            db_sec_group = ec2.CfnSecurityGroup(
+                self,
+                "DBSecurityGroup",
+                group_description="DB Instance Security Group",
+                vpc=eks_vpc
+            )
 
             cfn_db_subnets_group = rds.CfnDBSubnetGroup(
                 self, "MyCfnDBSubnetGroup",
@@ -1951,7 +1950,7 @@ class EKSClusterStack(Stack):
 
                 # the properties below are optional
                 db_subnet_group_name="jam_subnet_g"
-                )
+            )
 
             cfn_db = rds.CfnDBInstance(
                 self, 
@@ -1963,10 +1962,11 @@ class EKSClusterStack(Stack):
                 master_username="root",
                 master_user_password="Pa$$w0rd1$2020",
                 publicly_accessible=False,
-                db_subnet_group_name="jam_subnet_g"
+                db_subnet_group_name="jam_subnet_g",
+                db_security_groups=["DBSecurityGroup"]
             )
             cfn_db.add_depends_on(cfn_db_subnets_group)
-            
+
             parameter = ssm.StringParameter( 
                 self,
                 f'DBConnString',
