@@ -1939,12 +1939,15 @@ class EKSClusterStack(Stack):
                 #     parameter_group_name="default.mysql8.0"
                 # )
             )
+
+            print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[0].subnet_id)
+            print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[1].subnet_id)
+            print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[2].subnet_id)
             
-            print("Debug: ", eks_vpc.private_subnets)
             cfn_db_subnets_group = rds.CfnDBSubnetGroup(
                 self, "MyCfnDBSubnetGroup",
                 db_subnet_group_description="dbSubnetGroupDescription",
-                subnet_ids=[eks_vpc.private_subnets[0]],
+                subnet_ids=[eks_vpc.private_subnets[0].subnet_id,eks_vpc.private_subnets[1].subnet_id,eks_vpc.private_subnets[2].subnet_id],
 
                 # the properties below are optional
                 db_subnet_group_name="jam_subnet_g"
