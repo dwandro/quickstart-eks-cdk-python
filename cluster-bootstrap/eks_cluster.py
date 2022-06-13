@@ -1943,7 +1943,7 @@ class EKSClusterStack(Stack):
                 self, "MyCfnDBSubnetGroup",
                 db_subnet_group_description="dbSubnetGroupDescription",
                 subnet_ids=ec2.SubnetSelection(
-                    subnet_type=ec2.SubnetType.PRIVATE),
+                    subnet_type=ec2.SubnetType.PRIVATE_ISOLATED),
 
                 # the properties below are optional
                 db_subnet_group_name="jam_subnet_g"
