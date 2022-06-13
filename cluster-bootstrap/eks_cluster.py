@@ -1942,7 +1942,7 @@ class EKSClusterStack(Stack):
             cfn_db = rds.CfnDBInstance(
                 self, 
                 "MyCfnDBInstance",
-                allocated_storage=100,
+                allocated_storage="100",
                 db_instance_class="db.t3.medium",
                 engine= 'mysql',
                 db_name="JAMDB",
