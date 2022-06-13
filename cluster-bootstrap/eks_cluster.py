@@ -1939,6 +1939,16 @@ class EKSClusterStack(Stack):
                 #     parameter_group_name="default.mysql8.0"
                 # )
             )
+            cfn_db_subnets_group = rds.CfnDBSubnetGroup(
+                self, "MyCfnDBSubnetGroup",
+                db_subnet_group_description="dbSubnetGroupDescription",
+                subnet_ids=ec2.SubnetSelection(
+                    subnet_type=ec2.SubnetType.PRIVATE),
+
+                # the properties below are optional
+                db_subnet_group_name="jam_subnet_g"
+                )
+
             cfn_db = rds.CfnDBInstance(
                 self, 
                 "MyCfnDBInstance",
@@ -1947,8 +1957,9 @@ class EKSClusterStack(Stack):
                 engine= 'mysql',
                 db_name="JAMDB",
                 master_username="root",
-                master_user_password="Pa$$w0rd1$2020"
-
+                master_user_password="Pa$$w0rd1$2020",
+                publicly_accessible=False,
+                db_subnet_group_name="jam_subnet_g"
             )
             
             parameter = ssm.StringParameter( 
