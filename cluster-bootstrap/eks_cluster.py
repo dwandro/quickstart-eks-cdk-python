@@ -1956,7 +1956,7 @@ class EKSClusterStack(Stack):
             cfn_db = rds.CfnDBInstance(
                 self, 
                 "MyCfnDBInstance",
-                allocated_storage="100",
+                allocated_storage="20",
                 db_instance_class="db.t3.medium",
                 engine= 'mysql',
                 db_name="JAMDB",
@@ -1965,6 +1965,7 @@ class EKSClusterStack(Stack):
                 publicly_accessible=False,
                 db_subnet_group_name="jam_subnet_g"
             )
+            cfn_db.add_depends_on(cfn_db_subnets_group)
             
             parameter = ssm.StringParameter( 
                 self,
