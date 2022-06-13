@@ -1930,6 +1930,7 @@ class EKSClusterStack(Stack):
                 deletion_protection=False,
                 enable_performance_insights=True,
                 delete_automated_backups=True
+
                 # ,
                 # vpc_security_groups=rds_security_group
                 # backup_retention=core.Duration.days(1),
@@ -1938,12 +1939,23 @@ class EKSClusterStack(Stack):
                 #     parameter_group_name="default.mysql8.0"
                 # )
             )
+            cfn_db = rds.CfnDBInstance(
+                self, 
+                "MyCfnDBInstance",
+                db_instance_class="db.t3.medium",
+                engine= 'mysql',
+                db_name="JAMDB",
+                master_username="root",
+                master_user_password="Pa$$w0rd1$2020"
 
+            )
+            
             parameter = ssm.StringParameter( 
                 self,
                 f'DBConnString',
                 parameter_name="DBConnString",
-                string_value=db.db_instance_endpoint_address,
+                # string_value=db.db_instance_endpoint_address,
+                string_value=cfn_db.attr_endpoint_address,
                 description="Database Connect String"
             )
         
