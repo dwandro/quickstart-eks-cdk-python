@@ -1942,8 +1942,7 @@ class EKSClusterStack(Stack):
             cfn_db_subnets_group = rds.CfnDBSubnetGroup(
                 self, "MyCfnDBSubnetGroup",
                 db_subnet_group_description="dbSubnetGroupDescription",
-                subnet_ids=ec2.SubnetSelection(
-                    subnet_type=ec2.SubnetType.PRIVATE_ISOLATED),
+                subnet_ids=eks_vpc.private_subnets,
 
                 # the properties below are optional
                 db_subnet_group_name="jam_subnet_g"
