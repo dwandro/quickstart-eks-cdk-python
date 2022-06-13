@@ -1938,7 +1938,7 @@ class EKSClusterStack(Stack):
             # Create security group for the RDS instance
             db_sec_group = ec2.CfnSecurityGroup(
                 self,
-                "DBSecurityGroup",
+                "dbsecuritygroup",
                 group_description="DB Instance Security Group",
                 vpc_id=eks_vpc.vpc_id
             )
@@ -1963,7 +1963,7 @@ class EKSClusterStack(Stack):
                 master_user_password="Pa$$w0rd1$2020",
                 publicly_accessible=False,
                 db_subnet_group_name="jam_subnet_g",
-                db_security_groups=["DBSecurityGroup"]
+                db_security_groups=["dbsecuritygroup"]
             )
             cfn_db.add_depends_on(db_sec_group)
             cfn_db.add_depends_on(cfn_db_subnets_group)
