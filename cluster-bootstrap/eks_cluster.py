@@ -1940,9 +1940,9 @@ class EKSClusterStack(Stack):
                 # )
             )
 
-            print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[0].subnet_id)
-            print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[1].subnet_id)
-            print("[Debug: ]", eks_vpc.eks_vpc.private_subnets[2].subnet_id)
+            print("[Debug: ]", eks_vpc.private_subnets[0].subnet_id)
+            print("[Debug: ]", eks_vpc.private_subnets[1].subnet_id)
+            print("[Debug: ]", eks_vpc.private_subnets[2].subnet_id)
 
             # cfn_db_subnets_group = rds.CfnDBSubnetGroup(
             #     self, "MyCfnDBSubnetGroup",
