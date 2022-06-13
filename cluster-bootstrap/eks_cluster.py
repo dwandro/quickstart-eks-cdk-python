@@ -1965,6 +1965,7 @@ class EKSClusterStack(Stack):
                 db_subnet_group_name="jam_subnet_g",
                 db_security_groups=["DBSecurityGroup"]
             )
+            cfn_db.add_depends_on(db_sec_group)
             cfn_db.add_depends_on(cfn_db_subnets_group)
 
             parameter = ssm.StringParameter( 
