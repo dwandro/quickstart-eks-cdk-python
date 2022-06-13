@@ -1940,7 +1940,7 @@ class EKSClusterStack(Stack):
                 self,
                 "DBSecurityGroup",
                 group_description="DB Instance Security Group",
-                vpc=eks_vpc
+                vpc_id=eks_vpc.vpc_id
             )
 
             cfn_db_subnets_group = rds.CfnDBSubnetGroup(
