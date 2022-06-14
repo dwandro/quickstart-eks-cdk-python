@@ -89,6 +89,7 @@ class EKSClusterStack(Stack):
         # Create an EKS Cluster
         eks_cluster = eks.Cluster(
             self, "cluster",
+            cluster_name="jam-eks-cluster",
             vpc=eks_vpc,
             masters_role=cluster_admin_role,
             # Make our cluster's control plane accessible only within our private VPC
@@ -170,6 +171,7 @@ class EKSClusterStack(Stack):
 
             eks_node_group = eks_cluster.add_nodegroup_capacity(
                 "cluster-default-ng",
+                nodegroup_name="Default",
                 capacity_type=node_capacity_type,
                 desired_size=self.node.try_get_context("eks_node_quantity"),
                 min_size=self.node.try_get_context("eks_node_min_quantity"),
@@ -1907,29 +1909,29 @@ class EKSClusterStack(Stack):
                 print("You need to set only one destination for Fargate Logs to True")
 
         if(self.node.try_get_context("deploy_rds") == "True"):
-            db = rds.DatabaseInstance(
-                self, 
-                "MySQL8",
-                engine=rds.DatabaseInstanceEngine.mysql(version=rds.MysqlEngineVersion.VER_8_0),
-                instance_type=ec2.InstanceType("t3.medium"),
-                vpc=eks_vpc,
-                multi_az=True,
-                publicly_accessible=False,
-                allocated_storage=100,
-                storage_type=rds.StorageType.GP2,
-                cloudwatch_logs_exports=["error", "general", "slowquery"],
-                deletion_protection=False,
-                enable_performance_insights=True,
-                delete_automated_backups=True
+            # db = rds.DatabaseInstance(
+            #     self, 
+            #     "MySQL8",
+            #     engine=rds.DatabaseInstanceEngine.mysql(version=rds.MysqlEngineVersion.VER_8_0),
+            #     instance_type=ec2.InstanceType("t3.medium"),
+            #     vpc=eks_vpc,
+            #     multi_az=True,
+            #     publicly_accessible=False,
+            #     allocated_storage=100,
+            #     storage_type=rds.StorageType.GP2,
+            #     cloudwatch_logs_exports=["error", "general", "slowquery"],
+            #     deletion_protection=False,
+            #     enable_performance_insights=True,
+            #     delete_automated_backups=True
                 
-                # ,
-                # vpc_security_groups=rds_security_group
-                # backup_retention=core.Duration.days(1),
-                # parameter_group=rds.ParameterGroup.from_parameter_group_name(
-                #     self, "para-group-mysql",
-                #     parameter_group_name="default.mysql8.0"
-                # )
-            )
+            #     # ,
+            #     # vpc_security_groups=rds_security_group
+            #     # backup_retention=core.Duration.days(1),
+            #     # parameter_group=rds.ParameterGroup.from_parameter_group_name(
+            #     #     self, "para-group-mysql",
+            #     #     parameter_group_name="default.mysql8.0"
+            #     # )
+            # )
             
             # print("[Debug: ]", eks_vpc.private_subnets[0].subnet_id)
             # print("[Debug: ]", eks_vpc.private_subnets[1].subnet_id)
@@ -1939,6 +1941,7 @@ class EKSClusterStack(Stack):
             db_sec_group = ec2.CfnSecurityGroup(
                 self,
                 "dbsecuritygroup",
+                group_name="DBEC2SecurityGroup",
                 group_description="DB Instance Security Group",
                 vpc_id=eks_vpc.vpc_id
             )
