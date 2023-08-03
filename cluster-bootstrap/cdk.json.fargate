@@ -10,7 +10,7 @@
       "vpc_cidr_mask_public": 26,
       "vpc_cidr_mask_private": 24,
       "existing_vpc_name": "VPC",
-      "eks_version": "1.21",
+      "eks_version": "1.24",
       "eks_deploy_managed_nodegroup": "False",
       "eks_node_quantity": 2,
       "eks_node_max_quantity": 5,
